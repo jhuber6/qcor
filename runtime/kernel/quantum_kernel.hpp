@@ -1076,7 +1076,9 @@ void print_kernel(KernelSignature<Args...> &kernelCallable, std::ostream &os,
   auto tempKernel = qcor::__internal__::create_composite("temp_print");
   kernelCallable(tempKernel, args...);
   xacc::internal_compiler::execute_pass_manager();
-  os << tempKernel->toString() << "\n";
+  auto &accelerator = *xacc::internal_compiler::get_qpu();
+  std::string kernelStr = accelerator.getNativeCode(tempKernel);
+  os << kernelStr << "\n";
 }
 
 template <typename... Args>
